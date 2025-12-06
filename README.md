@@ -1,8 +1,52 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Weather Decision App
 
-## Getting Started
+A full-stack Next.js application that fetches weather data and determines whether conditions are "good" or "bad" based on a predefined decision table.
 
-First, run the development server:
+## Features
+
+- 📍 Input latitude and longitude coordinates
+- 🌤️ Fetch real-time weather data from backend API
+- ✅ Display weather condition, temperature, and monthly threshold
+- 🎯 Determine "GOOD" or "BAD" decision based on comprehensive decision logic
+- 🎨 Modern, responsive UI with clear visual feedback
+
+## Tech Stack
+
+- **Framework:** Next.js 14.2.15
+- **UI Library:** React 18
+- **Styling:** Tailwind CSS 3.4.1
+- **Language:** JavaScript
+
+## Prerequisites
+
+- Node.js (v18 or higher recommended)
+- npm, yarn, pnpm, or bun
+- Backend API running on `http://localhost:4000`
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone <repository-url>
+cd technical-test
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+3. Make sure your backend API is running on `http://localhost:4000`
+
+## Running the Application
+
+Start the development server:
 
 ```bash
 npm run dev
@@ -10,27 +54,101 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Build for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/
+│   ├── components/
+│   │   ├── WeatherCard.js      # Displays weather data and decision
+│   │   ├── WeatherForm.js      # Form for latitude/longitude input
+│   │   └── Loader.js           # Loading component
+│   ├── utils/
+│   │   ├── api.js              # API client for backend communication
+│   │   └── decisionLogic.js    # Decision table implementation
+│   ├── page.js                 # Main page component
+│   └── globals.css             # Global styles
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## API Integration
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+The frontend communicates with the backend API endpoint:
 
-## Deploy on Vercel
+```
+GET http://localhost:4000/api/v1/weather/get-weather?lat={latitude}&lon={longitude}
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Expected Response Format:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```json
+{
+  "temperature": 7,
+  "rawCondition": "Stark bewölkt",
+  "simplifiedCondition": "cloudy",
+  "month": 12,
+  "threshold": 16,
+  "decision": "bad"
+}
+```
+
+## Decision Logic
+
+The application implements a comprehensive decision table that evaluates weather conditions based on:
+
+- **Weather Condition:** Sunny, Cloudy, Rain, Snow, Fog, etc.
+- **Temperature:** Current temperature in Celsius
+- **Monthly Threshold:** Temperature threshold for the current month
+- **Season:** Winter months (December, January, February) have special rules for snow
+
+The decision logic is implemented in `src/app/utils/decisionLogic.js` and handles various combinations of conditions and temperature thresholds to determine if weather is "good" or "bad".
+
+### Example Decision Rules:
+
+- **Sunny/Clear:** Good if temperature ≥ monthly threshold
+- **Partly Cloudy:** Good if temperature ≥ threshold + 10°C
+- **Cloudy:** Good if temperature ≥ 15°C or temperature ≥ threshold + 3°C
+- **Rain:** Always bad
+- **Snow:** Good only in winter when temperature ≤ threshold
+
+## Usage
+
+1. Enter latitude and longitude coordinates in the form
+2. Click "Check Weather"
+3. View the weather details and decision result
+   - **Green** indicates "GOOD" weather
+   - **Red** indicates "BAD" weather
+
+## Error Handling
+
+The application gracefully handles:
+
+- Network errors
+- Invalid API responses
+- Missing data fields
+- Backend server errors
+
+Errors are displayed in a user-friendly format with clear messaging.
+
+## Development
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm start` - Start production server
+- `npm run lint` - Run ESLint
+
+## License
+
+Private project for technical assessment.
